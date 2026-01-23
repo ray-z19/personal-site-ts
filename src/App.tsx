@@ -1,12 +1,12 @@
-import * as React from 'react'
+import * as React from 'react';
 
 type Story = {
-  title: string;
+  objectID: number;
   url: string;
+  title: string;
   author: string;
   num_comments: number;
   points: number;
-  objectID: number;
 };
 
 const App = () => {
@@ -29,19 +29,27 @@ const App = () => {
     },
   ];
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
-  }
-  
+  const [searchTerm, setSearchTerm] = React.useState('');
+
+  const handleSearch = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const searchedStories = stories.filter((story) =>
+    story.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <h1>My Hacker Stories</h1>
 
-      <Search onSearch={handleSearch}/>
+      <Search onSearch={handleSearch} />
 
       <hr />
 
-      <List list={stories} />
+      <List list={searchedStories} />
     </div>
   );
 };
@@ -50,40 +58,24 @@ type SearchProps = {
   onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Search = (props: SearchProps) => {
-  const [searchTerm, setSearchTerm] = React.useState("");
-  
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-
-    props.onSearch(event)
-  }
-  
-  return (
-    <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" onChange={handleChange} />
-
-      <p>
-        Searching for <strong>{searchTerm}</strong>
-      </p>
-    </div>
-  );
-};
+const Search = (props: SearchProps) => (
+  <div>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text" onChange={props.onSearch} />
+  </div>
+);
 
 type ListProps = {
   list: Story[];
 };
 
-const List = (props: ListProps) => {
-  return (
+const List = (props: ListProps) => (
   <ul>
     {props.list.map((item) => (
       <Item key={item.objectID} item={item} />
-    ))};
+    ))}
   </ul>
-  );
-};
+);
 
 type ItemProps = {
   item: Story;
