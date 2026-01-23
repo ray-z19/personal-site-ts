@@ -1,3 +1,5 @@
+import * as React from 'react'
+
 type Story = {
   title: string;
   url: string;
@@ -26,12 +28,16 @@ const App = () => {
       objectID: 1,
     },
   ];
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+  }
   
   return (
     <div>
       <h1>My Hacker Stories</h1>
 
-      <Search />
+      <Search onSearch={handleSearch}/>
 
       <hr />
 
@@ -40,16 +46,27 @@ const App = () => {
   );
 };
 
-const Search = () => {
+type SearchProps = {
+  onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+
+const Search = (props: SearchProps) => {
+  const [searchTerm, setSearchTerm] = React.useState("");
+  
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event);
-    console.log(event.target.value)
+    setSearchTerm(event.target.value);
+
+    props.onSearch(event)
   }
   
   return (
     <div>
       <label htmlFor="search">Search: </label>
       <input id="search" type="text" onChange={handleChange} />
+
+      <p>
+        Searching for <strong>{searchTerm}</strong>
+      </p>
     </div>
   );
 };
@@ -58,13 +75,15 @@ type ListProps = {
   list: Story[];
 };
 
-const List = (props: ListProps) => (
+const List = (props: ListProps) => {
+  return (
   <ul>
     {props.list.map((item) => (
       <Item key={item.objectID} item={item} />
     ))};
   </ul>
-);
+  );
+};
 
 type ItemProps = {
   item: Story;
