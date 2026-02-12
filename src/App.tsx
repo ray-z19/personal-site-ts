@@ -43,14 +43,6 @@ const App = () => {
 
   const[searchTerm, setSearchTerm] = useStorageState("search", "React");
 
-  // const [searchTerm, setSearchTerm] = React.useState(
-  //   localStorage.getItem("search") || 'React'
-  // );
-
-  // React.useEffect(() => {
-  //   localStorage.setItem("search", searchTerm);
-  // }, [searchTerm]);
-
   const handleSearch = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -64,8 +56,14 @@ const App = () => {
   return (
     <div>
       <h1>My Hacker Stories</h1>
-
-      <Search search={searchTerm} onSearch={handleSearch} />
+      
+      <InputWithLabel
+        id="search"
+        label="Search"
+        value={searchTerm}
+        type="text"
+        onInputChange={handleSearch}
+      />
 
       <hr />
 
@@ -74,22 +72,32 @@ const App = () => {
   );
 };
 
-type SearchProps = {
-  search: string
-  onSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
+type InputWithLabelProps = {
+  id: string;
+  label: string;
+  value: string;
+  type?: string;
+  onInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const Search = ({ search, onSearch }: SearchProps) => (
+const InputWithLabel = ({
+  id,
+  label,
+  value,
+  type = "text",
+  onInputChange
+}: InputWithLabelProps) => (
   <>
-    <label htmlFor="search">Search: </label>
+    <label htmlFor={id}>{label}</label>
+    &nbsp;
     <input
-      id="search"
-      type="text"
-      value={search}
-      onChange={onSearch}
+      id={id}
+      type={type}
+      value={value}
+      onChange={onInputChange}
     />
   </>
-);
+)
 
 type ListProps = {
   list: Story[];
